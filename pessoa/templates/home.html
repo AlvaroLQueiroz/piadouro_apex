@@ -1,1 +1,3 @@
-<h1>{{ object }}</h1>
+{% for seguindo in object.perfil.seguindo.all %}
+<h1>{{ seguindo }}</h1>
+{% endfor %}

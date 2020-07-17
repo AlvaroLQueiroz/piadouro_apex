@@ -39,7 +39,7 @@ class Perfil(models.Model):
     cidade = models.CharField(max_length=64)
     desempregado = models.BooleanField()
 
-    seguindo = models.ManyToManyField('self', related_name='seguidores')
+    seguindo = models.ManyToManyField('self', related_name='seguidores', symmetrical=False, null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
