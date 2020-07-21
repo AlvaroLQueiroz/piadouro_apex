@@ -1,3 +1,35 @@
-{% for seguindo in object.perfil.seguindo.all %}
-<h1>{{ seguindo }}</h1>
-{% endfor %}
+{% extends 'base.html' %}
+
+{% block principal %}
+<div class="row">
+  <ul class="collection col s3">
+    {% for seguindo in object.perfil.seguindo.all %}
+    <li class="collection-item avatar">
+      <img src="{{ seguindo.foto.url }}" alt="" class="circle">
+      <span class="title">
+        <a href="{% url 'perfil' seguindo.usuario.username %}">
+          {{ seguindo.usuario.username }}
+        </a>
+      </span>
+      <p>
+        Brotou por aqui {{ seguindo.usuario.date_joined|date:"d/m/Y" }}<br>
+        Seguidore: {{ seguindo.seguidores.count }}
+        Seguindo: {{ seguindo.seguindo.count }}
+      </p>
+      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if request.user.username in request.path %}
+  <form class="col s6">
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea id="textarea1" class="materialize-textarea"></textarea>
+        <label for="textarea1">Da um piu ai</label>
+      </div>
+    </div>
+  </form>
+</div>
+{% endif %}
+{% endblock principal %}
