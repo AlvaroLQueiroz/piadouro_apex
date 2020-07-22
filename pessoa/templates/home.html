@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block principal %}
+{{form.errors}}
 <div class="row">
   <ul class="collection col s3">
     {% for seguindo in object.perfil.seguindo.all %}
@@ -22,14 +23,35 @@
   </ul>
 
   {% if request.user.username in request.path %}
-  <form class="col s6">
+  <div class="col s6">
     <div class="row">
-      <div class="input-field col s12">
-        <textarea id="textarea1" class="materialize-textarea"></textarea>
-        <label for="textarea1">Da um piu ai</label>
-      </div>
+      <form class="col s12" method="POST" action="{% url 'piado-create' %}">
+        {% csrf_token %}
+        <div class="row">
+          <div class="input-field col s10">
+            <textarea id="textarea1" class="materialize-textarea" name="conteudo"></textarea>
+            <label for="textarea1">Da um piu ai</label>
+          </div>
+          <button type="submit">Piar</button>
+        </div>
+      </form>
     </div>
-  </form>
+    <div class="row">
+      {% for piado in object.perfil.piados.all %}
+      <div class="card">
+        <div class="card-content">
+          <p>{{ piado.conteudo }}</p>
+          <small class="right">{{ piado.data_criacao|date:"d/m/y h:m"}}</small>
+        </div>
+        <div class="card-action">
+          <a href="#">This is a link</a>
+          <a href="#">This is a link</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
 </div>
 {% endif %}
 {% endblock principal %}
