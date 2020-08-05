@@ -29,6 +29,7 @@ def validador_idade(data_nascimento):
             params={'value': data_nascimento},
         )
 
+
 class Perfil(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.PROTECT)
     foto = models.ImageField(upload_to='piadouro/imagens/')
