@@ -130,3 +130,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'piadouro')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'piadouro', 'imagens')
+
+LOGIN_URL = '/admin/login/'

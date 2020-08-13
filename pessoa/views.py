@@ -4,8 +4,9 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from pessoa.models import Perfil
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class Home(DetailView):
+class Home(LoginRequiredMixin, DetailView):
     template_name = 'home.html'
     model = User
 
@@ -13,12 +14,12 @@ class Home(DetailView):
         return get_object_or_404(self.model, username=self.kwargs['username'])
 
 
-class UserList(ListView):
+class UserList(LoginRequiredMixin, ListView):
     template_name = 'user_list.html'
     model = Perfil
 
 
-class Follow(RedirectView):
+class Follow(LoginRequiredMixin, RedirectView):
     permanent = False
     query_string = False
     pattern_name = 'usuarios'
@@ -30,3 +31,11 @@ class Follow(RedirectView):
         else:
             self.request.user.perfil.seguindo.add(profile_to_follow)
         return super().get_redirect_url()
+
+class RedirectHome(LoginRequiredMixin, RedirectView):
+    permanent = False
+    query_string = False
+    pattern_name = 'perfil'
+
+    def get_redirect_url(self, *args, **kwargs):
+        return super().get_redirect_url(self.request.user.username)
