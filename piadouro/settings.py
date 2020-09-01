@@ -138,6 +138,6 @@ LOGIN_REDIRECT_URL = '/'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'alvaro.lqueiroz@gmail.com'
-EMAIL_HOST_PASSWORD = PASS
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'TestSite Team <noreply@example.com>'

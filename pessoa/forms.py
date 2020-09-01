@@ -21,11 +21,21 @@ class UserForm(ModelForm):
         }
 
 
+class UserEditorForm(ModelForm):
+    class Meta:
+        model = User
+        exclude = [
+            'is_staff',
+            'is_active',
+            'date_joined',
+            'last_login',
+            'groups',
+            'user_permissions',
+            'is_superuser',
+            'password',
+        ]
+
 class UserProfileForm(ModelForm):
     class Meta:
         model = Perfil
-        exclude = ['usuario']
-        # widgets = {
-        #     'estado_civil': Select()
-        # }
-
+        exclude = ['usuario', 'seguindo']
