@@ -1,9 +1,11 @@
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from piado.models import Piado
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 
 class PiadoCreate(LoginRequiredMixin, CreateView):
     model = Piado
@@ -44,6 +46,7 @@ class PiadoLike(LoginRequiredMixin, UpdateView):
             self.object.curtidas.add(request.user.perfil.id)
         return HttpResponseRedirect(success_url)
 
+
 class RePiado(LoginRequiredMixin, UpdateView):
     model = Piado
 
@@ -52,6 +55,25 @@ class RePiado(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         if self.object.repiados.filter(id=request.user.perfil.id).exists():
             self.object.repiados.remove(request.user.perfil.id)
-        else:
+        elif self.object.usuario != request.user.perfil:
             self.object.repiados.add(request.user.perfil.id)
         return HttpResponseRedirect(success_url)
+
+
+class PiadoView(LoginRequiredMixin, DetailView):
+    model = Piado
+    template_name = 'piado/detail.html'
+
+
+class PiadoComment(LoginRequiredMixin, CreateView):
+    model = Piado
+    fields = ['conteudo']
+
+    def form_valid(self, form):
+        piado_hospedeiro = get_object_or_404(Piado, id=self.kwargs['hospedeiro'])
+        form.instance.piado_hospedeiro = piado_hospedeiro
+        form.instance.usuario = self.request.user.perfil
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('piado-detail', args=[self.kwargs['hospedeiro']])
