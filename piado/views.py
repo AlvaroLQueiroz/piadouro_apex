@@ -52,13 +52,17 @@ class RePiado(LoginRequiredMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         success_url = reverse('perfil', args=[request.GET['next_user']])
-        piado_velho = get_object_or_404(Piado, id=kwargs['pk'])
-        novo_piado = Piado(
-            proprietario=request.user,
-            conteudo=piado_velho.conteudo,
-            repiado_hospedeiro=piado_velho
-        )
-        novo_piado.save()
+        repiado_query = Piado.objects.filter(proprietario=request.user, repiado_hospedeiro_id=kwargs['pk'])
+        if repiado_query.exists():
+            repiado_query.delete()
+        else:
+            piado_velho = get_object_or_404(Piado, id=kwargs['pk'])
+            novo_piado = Piado(
+                proprietario=request.user,
+                conteudo=piado_velho.conteudo,
+                repiado_hospedeiro=piado_velho
+            )
+            novo_piado.save()
         return HttpResponseRedirect(success_url)
 
 

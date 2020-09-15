@@ -1,25 +1,40 @@
-{% load user_in %}
+{% load user_in humanize piado %}
 
 <div class="card">
   <div class="card-content">
-    {% if piado.comentario_hospedeiro %}
+    <!-- Repiado por -->
+    {% if piado.repiado_hospedeiro %}
       <small>
-        Em resposta ao
-        <a href="{% url 'piado-detail' piado.comentario_hospedeiro.id %}">
-          piado
-        </a>
-        de
-        <a href="{% url 'perfil' piado.comentario_hospedeiro.proprietario.username %}">
-          @{{piado.comentario_hospedeiro.proprietario}}
+        <a href="{% url 'perfil' piado.repiado_hospedeiro.proprietario.username %}">
+          @{{piado.proprietario}} repiou
         </a>
       </small>
     {% endif %}
+    <!-- Fim do repiado por -->
     <p>
+      <!-- Proprietário original -->
+      <small>
+        {% with piado.piado_original as piado_original %}
+        @{{ piado_original.proprietario }} - {{ piado_original.data_criacao|naturaltime }}
+        {% endwith %}
+      </small>
+      <!-- Fim do Proprietário original -->
+      <!-- Comentário -->
+      {% if piado.piado_comentario_hospedeiro %}
+        <br>
+        <small>
+          Em resposta ao
+          <a href="{% url 'perfil' piado.piado_comentario_hospedeiro.proprietario.username %}">
+            @{{piado.piado_comentario_hospedeiro.proprietario}}
+          </a>
+        </small>
+      {% endif %}
+      <!-- Fim comentário -->
+      <br>
       <a class="black-text" href="{% url 'piado-detail' piado.id %}">
         {{ piado.conteudo }}
       </a>
       <br/>
-      <small class='right'>{{ piado.proprietario }}</small>
     </p>
   </div>
   <div class="card-action">
@@ -42,7 +57,7 @@
           </a>
           {% elif piado.proprietario != request.user %}
             <a href="{% url 'repiar' piado.id %}?next_user={{ object.username }}">
-              {% if request.user|exists:piado.repiados.all %}
+              {% if request.user|already_repiado:piado %}
               <i class="material-icons">send</i>
               {% else %}
               <i class="material-icons-outlined">send</i>
