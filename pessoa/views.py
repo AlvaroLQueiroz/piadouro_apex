@@ -1,7 +1,7 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from pessoa.models import Perfil
@@ -14,17 +14,16 @@ from piado.models import Piado
 from django.db.models import Q
 
 
-class Home(LoginRequiredMixin, DetailView):
+class Home(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
-    model = User
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['piados'] = Piado.objects.filter(proprietario=self.object)
+        context['piados'] = Piado.objects.filter(
+            Q(proprietario=self.request.user) |
+            Q(proprietario__in=self.request.user.perfil.seguindo.all())
+        )
         return context
-
-    def get_object(self):
-        return get_object_or_404(self.model, username=self.kwargs['username'])
 
 
 class UserList(LoginRequiredMixin, ListView):
@@ -45,13 +44,6 @@ class Follow(LoginRequiredMixin, RedirectView):
             self.request.user.perfil.seguindo.add(user_to_follow)
         return super().get_redirect_url()
 
-class RedirectHome(LoginRequiredMixin, RedirectView):
-    permanent = False
-    query_string = False
-    pattern_name = 'perfil'
-
-    def get_redirect_url(self, *args, **kwargs):
-        return super().get_redirect_url(self.request.user.username)
 
 class Registration(CreateView):
     model = User
