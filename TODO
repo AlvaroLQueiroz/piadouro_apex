@@ -3,5 +3,8 @@
 [X] - Mostrar numero de repiados
 [X] - Mostrar numero de comentários
 [X] - Mostar piados de quem o usuario logado segue na home
-[] - Criar uma pagina para ver um determinado perfil
-[] - Após criar o piado, redirecionar para a home
+[X] - Criar uma pagina para ver um determinado perfil
+[X] - Após criar o piado, redirecionar para a home
+[] - Caixa de busca
+[] - Permitir imagens e videos nos piados
+[] - Adaptar layout principal para responsivo

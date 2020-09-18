@@ -15,8 +15,12 @@ class PiadoCreate(LoginRequiredMixin, CreateView):
         form.instance.proprietario = self.request.user
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        return HttpResponseRedirect(reverse('home'))
+
     def get_success_url(self):
-        return reverse('perfil', args=[self.request.user.username])
+        return reverse('home')
+
 
 class PiadoDelete(LoginRequiredMixin, DeleteView):
     model = Piado
@@ -51,7 +55,12 @@ class RePiado(LoginRequiredMixin, CreateView):
     model = Piado
 
     def get(self, request, *args, **kwargs):
-        success_url = reverse('perfil', args=[request.GET['next_user']])
+        next_user = request.GET.get('next_user')
+        if next_user:
+            success_url = reverse('perfil', args=[next_user])
+        else:
+            success_url = reverse('home')
+
         repiado_query = Piado.objects.filter(proprietario=request.user, repiado_hospedeiro_id=kwargs['pk'])
         if repiado_query.exists():
             repiado_query.delete()
@@ -75,11 +84,15 @@ class PiadoComment(LoginRequiredMixin, CreateView):
     model = Piado
     fields = ['conteudo']
 
+
     def form_valid(self, form):
         comentario_hospedeiro = get_object_or_404(Piado, id=self.kwargs['hospedeiro'])
         form.instance.comentario_hospedeiro = comentario_hospedeiro
         form.instance.proprietario = self.request.user
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(self.request.GET.get('next_page_on_error', '/'))
 
     def get_success_url(self):
         return reverse('piado-detail', args=[self.kwargs['hospedeiro']])
