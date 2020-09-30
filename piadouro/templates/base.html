@@ -26,6 +26,7 @@
   <nav>
     <div class="nav-wrapper">
       <a href="{% url 'home' %}" class="brand-logo">Piadouro</a>
+
       <ul class="right hide-on-med-and-down">
         {% if not request.user.is_authenticated %}
         <li><a href="{% url 'registration' %}">Criar conta</a></li>
@@ -38,6 +39,19 @@
       </ul>
     </div>
   </nav>
+  {% if request.user.is_authenticated %}
+  <nav>
+    <div class="nav-wrapper white">
+      <form action="{% url 'home' %}" method="GET">
+        <div class="input-field">
+          <input id="q" name="q" value="{{ q }}" type="search" placeholder="Pesquisar..." required>
+          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+          <i href="{% url 'home' %}" class="material-icons">close</i>
+        </div>
+      </form>
+    </div>
+  </nav>
+  {% endif %}
 
   <div class="section">
     <div class="row">
